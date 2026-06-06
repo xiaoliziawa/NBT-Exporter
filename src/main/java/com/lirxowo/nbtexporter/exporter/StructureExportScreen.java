@@ -40,6 +40,7 @@ public class StructureExportScreen extends Screen {
     private Checkbox saveConfigCheckbox;
 
     private static final int SELECTED_RESOLUTION = 2048;
+    private static final float SHIFT_SPEED_MULTIPLIER = 3.0f;
     private boolean pendingExport = false;
     private final String initialPath;
 
@@ -228,6 +229,9 @@ public class StructureExportScreen extends Screen {
             DeltaTracker deltaTracker = minecraft.getTimer();
             float frameTicks = Math.max(deltaTracker.getRealtimeDeltaTicks(), 0.05f);
             float panSpeed = 0.02f * frameTicks / Math.max(zoom, 0.1f);
+            if (hasShiftDown()) {
+                panSpeed *= SHIFT_SPEED_MULTIPLIER;
+            }
 
             if (InputConstants.isKeyDown(window, InputConstants.KEY_A)) {
                 panX += panSpeed;
