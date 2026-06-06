@@ -1,0 +1,13 @@
+{
+  "nbt_exporter.screen.structure_export": "结构导出",
+  "nbt_exporter.export.load": "加载",
+  "nbt_exporter.export.save": "导出",
+  "nbt_exporter.export.resolution": "分辨率",
+  "nbt_exporter.export.no_structure": "未加载结构",
+  "nbt_exporter.export.success": "已导出至 %s",
+  "nbt_exporter.export.lock": "锁定",
+  "nbt_exporter.export.unlock": "解锁",
+  "nbt_exporter.export.rotate": "旋转90°",
+  "nbt_exporter.export.reset_angle": "重置",
+  "nbt_exporter.export.save_config": "保存角度"
+}

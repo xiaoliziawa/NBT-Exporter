@@ -1,0 +1,13 @@
+{
+  "nbt_exporter.screen.structure_export": "Structure Export",
+  "nbt_exporter.export.load": "Load",
+  "nbt_exporter.export.save": "Export",
+  "nbt_exporter.export.resolution": "Resolution",
+  "nbt_exporter.export.no_structure": "No structure loaded",
+  "nbt_exporter.export.success": "Exported to %s",
+  "nbt_exporter.export.lock": "Lock",
+  "nbt_exporter.export.unlock": "Unlock",
+  "nbt_exporter.export.rotate": "Rotate 90",
+  "nbt_exporter.export.reset_angle": "Reset",
+  "nbt_exporter.export.save_config": "Save Angle"
+}
