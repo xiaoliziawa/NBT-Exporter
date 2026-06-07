@@ -1,0 +1,12 @@
+{
+  "nbt_exporter.screen.structure_export": "结构导出",
+  "nbt_exporter.export.load": "加载",
+  "nbt_exporter.export.save": "导出 PNG",
+  "nbt_exporter.export.lock": "锁定",
+  "nbt_exporter.export.unlock": "解锁",
+  "nbt_exporter.export.rotate": "旋转",
+  "nbt_exporter.export.reset_angle": "重置",
+  "nbt_exporter.export.save_config": "保存预设",
+  "nbt_exporter.export.no_structure": "未加载结构，请输入文件名后点击加载。",
+  "nbt_exporter.export.success": "已导出到 %s"
+}

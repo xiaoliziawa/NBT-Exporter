@@ -1,0 +1,12 @@
+{
+  "nbt_exporter.screen.structure_export": "Structure Export",
+  "nbt_exporter.export.load": "Load",
+  "nbt_exporter.export.save": "Export PNG",
+  "nbt_exporter.export.lock": "Lock",
+  "nbt_exporter.export.unlock": "Unlock",
+  "nbt_exporter.export.rotate": "Rotate",
+  "nbt_exporter.export.reset_angle": "Reset",
+  "nbt_exporter.export.save_config": "Save preset",
+  "nbt_exporter.export.no_structure": "No structure loaded. Enter a filename and click Load.",
+  "nbt_exporter.export.success": "Exported to %s"
+}

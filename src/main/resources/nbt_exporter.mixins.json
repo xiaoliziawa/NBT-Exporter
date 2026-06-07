@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.lirxowo.nbt_exporter.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "nbt_exporter.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "EntityAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
