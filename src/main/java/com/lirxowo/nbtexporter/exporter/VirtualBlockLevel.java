@@ -3,7 +3,6 @@ package com.lirxowo.nbtexporter.exporter;
 import com.lirxowo.nbtexporter.exporter.compat.ICheckModLoaded;
 import com.lirxowo.nbtexporter.exporter.compat.MekanismTransmitterHelper;
 import lombok.Getter;
-import net.createmod.catnip.levelWrappers.WrappedLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

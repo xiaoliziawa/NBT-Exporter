@@ -2,7 +2,9 @@
   "required": true,
   "package": "com.lirxowo.nbtexporter.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "EntityAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
