@@ -474,7 +474,7 @@ public class StructureRenderer implements AutoCloseable {
         lightsBuffer.close();
     }
 
-    private record LayerMesh(GpuBuffer vertices, int indexCount, VertexFormat.Mode mode, MeshData.SortState sortState) {
+    record LayerMesh(GpuBuffer vertices, int indexCount, VertexFormat.Mode mode, MeshData.SortState sortState) {
         void close() {
             vertices.close();
         }

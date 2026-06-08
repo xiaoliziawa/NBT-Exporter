@@ -7,6 +7,7 @@ import com.lirxowo.nbtexporter.exporter.StructureExportScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,6 +24,10 @@ public class ExporterCommand {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         Minecraft minecraft = Minecraft.getInstance();
         dispatcher.register(Commands.literal("nbtexporter").then(Commands.literal("export").executes(context -> {
+            if (!isNativeSupported()) {
+                context.getSource().sendFailure(Component.translatable("nbtexporter.command.unsupported_platform"));
+                return 0;
+            }
             minecraft.execute(() -> minecraft.setScreen(new StructureExportScreen()));
             return 1;
         }).then(Commands.argument("file", StringArgumentType.string()).suggests((context, builder) -> {
@@ -38,9 +43,19 @@ public class ExporterCommand {
             }
             return builder.buildFuture();
         }).executes(context -> {
+            if (!isNativeSupported()) {
+                context.getSource().sendFailure(Component.translatable("nbtexporter.command.unsupported_platform"));
+                return 0;
+            }
             String file = StringArgumentType.getString(context, "file");
             minecraft.execute(() -> minecraft.setScreen(new StructureExportScreen(file)));
             return 1;
         }))));
+    }
+
+    private static boolean isNativeSupported() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String arch = System.getProperty("os.arch").toLowerCase();
+        return os.contains("win") && (arch.equals("amd64") || arch.equals("x86_64"));
     }
 }

@@ -9,5 +9,6 @@
   "nbtexporter.export.unlock": "解锁",
   "nbtexporter.export.rotate": "旋转90°",
   "nbtexporter.export.reset_angle": "重置",
-  "nbtexporter.export.save_config": "保存角度"
+  "nbtexporter.export.save_config": "保存角度",
+  "nbtexporter.command.unsupported_platform": "NBTExporter 的导出功能仅支持 Windows x64。"
 }

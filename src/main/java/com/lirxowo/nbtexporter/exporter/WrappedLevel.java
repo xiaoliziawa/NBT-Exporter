@@ -251,7 +251,8 @@ public class WrappedLevel extends Level {
         return emptyEntityGetter;
     }
 
-    private static final class EmptyEntityGetter<T extends EntityAccess> implements LevelEntityGetter<T> {
+    // 包级可见: native 加密会破坏 nestmate 校验，外部类构造函数访问 private 内部类会抛 IllegalAccessError，故走包访问
+    static final class EmptyEntityGetter<T extends EntityAccess> implements LevelEntityGetter<T> {
 
         @Nullable
         @Override

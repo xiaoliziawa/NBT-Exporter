@@ -19,3 +19,7 @@ hs_err_pid*
 
 # Common working directory
 run
+
+# Native 加密产物与脚本工作目录
+dist/
+tools/native-obfuscator/pipeline/
