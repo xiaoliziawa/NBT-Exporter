@@ -3,6 +3,7 @@ package com.lirxowo.nbtexporter.exporter.compat;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+@SuppressWarnings({"unused", "CommentedOutCode"})
 public class IEModelHelper {
 
     // Immersive Engineering 尚未更新到 26.1.2,以下逻辑暂时注释。

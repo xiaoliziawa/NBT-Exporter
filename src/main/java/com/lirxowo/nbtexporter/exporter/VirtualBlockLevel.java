@@ -136,7 +136,7 @@ public class VirtualBlockLevel extends WrappedLevel {
         Map<String, List<StructureScene.EntityInfo>> byType = new LinkedHashMap<>();
         for (StructureScene.EntityInfo info : infos) {
             String typeId = info.nbt().getStringOr("id", "");
-            byType.computeIfAbsent(typeId, key -> new ArrayList<>()).add(info);
+            byType.computeIfAbsent(typeId, _ -> new ArrayList<>()).add(info);
         }
 
         List<StructureScene.EntityInfo> result = new ArrayList<>();

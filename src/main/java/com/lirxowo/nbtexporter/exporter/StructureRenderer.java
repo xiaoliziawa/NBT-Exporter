@@ -23,7 +23,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.math.Axis;
@@ -61,9 +60,11 @@ import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
@@ -120,14 +121,14 @@ public class StructureRenderer implements AutoCloseable {
         Minecraft mc = Minecraft.getInstance();
         int rectWidth = Math.max(1, x1 - x0);
         int rectHeight = Math.max(1, y1 - y0);
-        int guiScale = Math.max(1, (int) mc.getWindow().getGuiScale());
+        int guiScale = Math.max(1, mc.getWindow().getGuiScale());
         int texWidth = rectWidth * guiScale;
         int texHeight = rectHeight * guiScale;
         ensurePreviewTarget(texWidth, texHeight);
         float aspect = (float) texWidth / texHeight;
 
         RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(
-                previewTarget.getColorTexture(), 0, previewTarget.getDepthTexture(), 1.0);
+                Objects.requireNonNull(previewTarget.getColorTexture()), 0, Objects.requireNonNull(previewTarget.getDepthTexture()), 1.0);
 
         RenderSystem.backupProjectionMatrix();
         setupCamera(rotX, rotY, zoom, panX, panY, aspect);
@@ -138,7 +139,7 @@ public class StructureRenderer implements AutoCloseable {
         RenderSystem.restoreProjectionMatrix();
 
         GpuSampler sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
-        graphics.blit(previewTarget.getColorTextureView(), sampler, x0, y0, x1, y1, 0f, 1f, 1f, 0f);
+        graphics.blit(Objects.requireNonNull(previewTarget.getColorTextureView()), sampler, x0, y0, x1, y1, 0f, 1f, 1f, 0f);
     }
 
     private void ensurePreviewTarget(int width, int height) {
@@ -176,8 +177,8 @@ public class StructureRenderer implements AutoCloseable {
             return;
         }
 
-        GpuTexture colorTexture = fbo.getColorTexture();
-        GpuTexture depthTexture = fbo.getDepthTexture();
+        GpuTexture colorTexture = Objects.requireNonNull(fbo.getColorTexture());
+        GpuTexture depthTexture = Objects.requireNonNull(fbo.getDepthTexture());
         RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, 0, depthTexture, 1.0);
 
         RenderSystem.backupProjectionMatrix();
@@ -316,17 +317,21 @@ public class StructureRenderer implements AutoCloseable {
     private void drawLayer(Minecraft mc, RenderTarget target, ChunkSectionLayer layer, LayerMesh mesh, GpuTextureView atlasView, GpuSampler atlasSampler, int atlasWidth, int atlasHeight) {
         RenderPipeline pipeline = layer.pipeline();
 
-        GpuBuffer indices;
-        VertexFormat.IndexType indexType;
+        GpuBuffer indices = null;
+        VertexFormat.IndexType indexType = null;
         ByteBufferBuilder sortScratch = null;
         ByteBufferBuilder.Result sortedIndices = null;
-        if (mesh.sortState() != null) {
+        MeshData.SortState sortState = mesh.sortState();
+        if (sortState != null) {
             Vector3f eye = new Matrix4f(RenderSystem.getModelViewMatrix()).invert().transformPosition(new Vector3f());
             sortScratch = ByteBufferBuilder.exactlySized(mesh.indexCount() * Integer.BYTES);
-            sortedIndices = mesh.sortState().buildSortedIndexBuffer(sortScratch, VertexSorting.byDistance(eye));
-            indices = pipeline.getVertexFormat().uploadImmediateIndexBuffer(sortedIndices.byteBuffer());
-            indexType = mesh.sortState().indexType();
-        } else {
+            sortedIndices = sortState.buildSortedIndexBuffer(sortScratch, VertexSorting.byDistance(eye));
+            if (sortedIndices != null) {
+                indices = pipeline.getVertexFormat().uploadImmediateIndexBuffer(sortedIndices.byteBuffer());
+                indexType = sortState.indexType();
+            }
+        }
+        if (indices == null) {
             RenderSystem.AutoStorageIndexBuffer auto = RenderSystem.getSequentialBuffer(mesh.mode());
             indices = auto.getBuffer(mesh.indexCount());
             indexType = auto.type();
@@ -337,7 +342,7 @@ public class StructureRenderer implements AutoCloseable {
 
         try (RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(
                 () -> "nbtexporter",
-                target.getColorTextureView(), OptionalInt.empty(),
+                Objects.requireNonNull(target.getColorTextureView()), OptionalInt.empty(),
                 target.getDepthTextureView(), OptionalDouble.empty())) {
             pass.setPipeline(pipeline);
             RenderSystem.bindDefaultUniforms(pass);
@@ -365,11 +370,12 @@ public class StructureRenderer implements AutoCloseable {
         BlockEntityRenderDispatcher beDispatcher = mc.getBlockEntityRenderDispatcher();
         EntityRenderDispatcher entityDispatcher = mc.getEntityRenderDispatcher();
         beDispatcher.prepare(Vec3.ZERO);
+        //noinspection DataFlowIssue
         entityDispatcher.prepare(mc.gameRenderer.getMainCamera(), null);
 
         for (BlockEntity blockEntity : virtualLevel.getRenderedBlockEntities()) {
             try {
-                BlockEntityRenderState state = beDispatcher.tryExtractRenderState(blockEntity, 0f, null);
+                BlockEntityRenderState state = beDispatcher.tryExtractRenderState(blockEntity, 0f, null, null);
                 if (state == null) {
                     continue;
                 }
@@ -444,7 +450,7 @@ public class StructureRenderer implements AutoCloseable {
         CompletableFuture.runAsync(() -> {
             try {
                 if (outputPath.getParent() != null) {
-                    outputPath.getParent().toFile().mkdirs();
+                    Files.createDirectories(outputPath.getParent());
                 }
                 image.writeToFile(outputPath);
                 image.close();

@@ -8,6 +8,7 @@ import java.util.Map;
 public class MekanismTransmitterHelper {
 
     // Mekanism 尚未更新到 26.1.2,以下逻辑暂时注释。
+    @SuppressWarnings({"unused", "CommentedOutCode"})
     public static void refreshConnections(Map<BlockPos, BlockEntity> blockEntities) {
         // for (Map.Entry<BlockPos, BlockEntity> entry : blockEntities.entrySet()) {
         //     BlockEntity blockEntity = entry.getValue();

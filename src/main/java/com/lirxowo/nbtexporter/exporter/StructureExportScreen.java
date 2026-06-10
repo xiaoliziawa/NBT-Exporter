@@ -75,13 +75,13 @@ public class StructureExportScreen extends Screen {
         pathInput = new EditBox(this.font, centerX - 140, 10, 200, 20, Component.literal("Path"));
         pathInput.setMaxLength(512);
         pathInput.setHint(Component.literal("filename.nbt"));
-        pathInput.setResponder(text -> refreshSuggestions());
+        pathInput.setResponder(_ -> refreshSuggestions());
         if (initialPath != null) {
             pathInput.setValue(initialPath);
         }
         addRenderableWidget(pathInput);
 
-        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.load"), button -> loadStructure()).bounds(centerX + 65, 10, 50, 20).build());
+        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.load"), _ -> loadStructure()).bounds(centerX + 65, 10, 50, 20).build());
 
         resolutionInput = new EditBox(this.font, centerX - 140, this.height - 30, 130, 20, Component.literal("Resolution"));
         resolutionInput.setMaxLength(5);
@@ -90,7 +90,7 @@ public class StructureExportScreen extends Screen {
         resolutionInput.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
         addRenderableWidget(resolutionInput);
 
-        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.save"), button -> pendingExport = true).bounds(centerX + 5, this.height - 30, 110, 20).build());
+        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.save"), _ -> pendingExport = true).bounds(centerX + 5, this.height - 30, 110, 20).build());
 
         int angleY = this.height - 55;
         rotXInput = new EditBox(this.font, centerX - 125, angleY, 45, 20, Component.literal("RotX"));
@@ -100,7 +100,7 @@ public class StructureExportScreen extends Screen {
         rotXInput.setResponder(text -> {
             try {
                 float val = Float.parseFloat(text);
-                rotationX = Math.max(-90f, Math.min(90f, val));
+                rotationX = Math.clamp(val, -90f, 90f);
             } catch (NumberFormatException ignored) {
             }
         });
@@ -124,13 +124,13 @@ public class StructureExportScreen extends Screen {
         }).bounds(centerX + 5, angleY, 40, 20).build();
         addRenderableWidget(lockButton);
 
-        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.rotate"), button -> {
+        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.rotate"), _ -> {
             rotationY += 90f;
             if (rotationY >= 360f) rotationY -= 360f;
             syncAngleInputs();
         }).bounds(centerX + 48, angleY, 55, 20).build());
 
-        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.reset_angle"), button -> {
+        addRenderableWidget(Button.builder(NBTLang.translateDirect("export.reset_angle"), _ -> {
             ExportConfig preset = ExportConfig.load();
             rotationX = preset.rotationX;
             rotationY = preset.rotationY;
@@ -300,7 +300,7 @@ public class StructureExportScreen extends Screen {
             resolution = SELECTED_RESOLUTION;
         }
 
-        resolution = Math.max(1024, Math.min(16384, resolution));
+        resolution = Math.clamp(resolution, 1024, 16384);
 
         String pathStr = pathInput.getValue().trim();
 
@@ -412,7 +412,7 @@ public class StructureExportScreen extends Screen {
         if (dragging && event.button() == 0 && !angleLocked) {
             rotationY += (float) dragX * 0.5f;
             rotationX += (float) dragY * 0.5f;
-            rotationX = Math.max(-90f, Math.min(90f, rotationX));
+            rotationX = Math.clamp(rotationX, -90f, 90f);
             syncAngleInputs();
             return true;
         }
@@ -421,7 +421,7 @@ public class StructureExportScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        zoom = (float) Math.max(0.1, Math.min(10.0, zoom + scrollY * 0.1));
+        zoom = (float) Math.clamp(zoom + scrollY * 0.1, 0.1, 10.0);
         return true;
     }
 

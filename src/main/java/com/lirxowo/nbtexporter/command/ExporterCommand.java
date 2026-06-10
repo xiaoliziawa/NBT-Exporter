@@ -22,10 +22,10 @@ public class ExporterCommand {
     public static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         Minecraft minecraft = Minecraft.getInstance();
-        dispatcher.register(Commands.literal("nbtexporter").then(Commands.literal("export").executes(context -> {
+        dispatcher.register(Commands.literal("nbtexporter").then(Commands.literal("export").executes(_ -> {
             minecraft.execute(() -> minecraft.setScreen(new StructureExportScreen()));
             return 1;
-        }).then(Commands.argument("file", StringArgumentType.string()).suggests((context, builder) -> {
+        }).then(Commands.argument("file", StringArgumentType.string()).suggests((_, builder) -> {
             Path schematicsDir = minecraft.gameDirectory.toPath().resolve("schematics");
             if (Files.isDirectory(schematicsDir)) {
                 try (Stream<Path> stream = Files.list(schematicsDir)) {
