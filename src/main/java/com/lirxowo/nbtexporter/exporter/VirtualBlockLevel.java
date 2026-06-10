@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class VirtualBlockLevel extends WrappedLevel {
     }
 
     @Override
-    public @NotNull BlockState getBlockState(BlockPos pos) {
+    public @NotNull BlockState getBlockState(@NonNull BlockPos pos) {
         return blocks.getOrDefault(pos, Blocks.AIR.defaultBlockState());
     }
 
